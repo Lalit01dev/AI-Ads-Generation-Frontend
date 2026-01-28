@@ -114,7 +114,7 @@ export default function Dashboard() {
         </div>
         <div className="flex items-center gap-3">
           <h2 className="text-xl font-semibold">
-            Step 1 – Generate Campaign Images
+            Step 1 : Generate Campaign Images
           </h2>
         </div>
         <button
@@ -177,7 +177,7 @@ export default function Dashboard() {
           <>
             <div className="flex items-center gap-3 mt-10">
               <h2 className="text-xl font-semibold">
-                Step 2 – Generate Campaign Video
+                Step 2 : Generate Campaign Video
               </h2>
             </div>
 
