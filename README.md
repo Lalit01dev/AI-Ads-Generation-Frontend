@@ -1,16 +1,45 @@
-# React + Vite
+AI Image & Video Ads Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An AI-powered web application that generates high-quality **image and video advertisements** based on user inputs.  
+The platform helps businesses quickly create marketing ads with minimal effort using AI-driven content generation.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## React Compiler
+- AI-based image ad generation
+- AI-generated video advertisements
+- Download generated videos ads
+- Fully responsive UI
+- Fast and smooth user experience
+- Clean and modern design using Tailwind CSS
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+---
 
-## Expanding the ESLint configuration
+## Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Frontend:** React.js
+- **Styling:** Tailwind CSS
+- **Markup:** HTML5
+- **API Integration:** REST APIs
+- **State Management:** React Hooks
+
+## Installation & Setup
+
+Follow these steps to run the project locally:
+
+# Clone the repository
+
+git clone https://github.com/Lalit01dev/AI-Ads-Generation-Frontend.git
+
+# Navigate to project folder
+
+cd ai-ads-generator
+
+# Install dependencies
+
+npm install
+
+# Start development server
+
+npm run dev
