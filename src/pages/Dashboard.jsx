@@ -1,11 +1,15 @@
+import { useEffect, useRef } from "react";
 import { useState } from "react";
 import Sidebar from "../components/Sidebar";
 import {
   generateBeautyCampaign,
   generateCampaignVideos,
+  getCampaignStatus,
 } from "../API/Campaign.api";
 import { MdFullscreen } from "react-icons/md";
 import { IoIosClose } from "react-icons/io";
+import { FiDownload } from "react-icons/fi";
+
 export default function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [scenes, setScenes] = useState([]);
@@ -16,6 +20,12 @@ export default function Dashboard() {
   const [videoSuccess, setVideoSuccess] = useState(false);
   const [fullscreenImage, setFullscreenImage] = useState(null);
   const [videoUrl, setVideoUrl] = useState(null);
+  const pollingRef = useRef(null);
+  const [startPolling, setStartPolling] = useState(false);
+
+  const [videoStatusMessage, setVideoStatusMessage] = useState(
+    "Initializing video generation…",
+  );
 
   const [sidebarValues, setSidebarValues] = useState({
     businessType: "",
@@ -28,6 +38,14 @@ export default function Dashboard() {
     phoneNumber: "",
     website: "",
   });
+
+  useEffect(() => {
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+      }
+    };
+  }, []);
 
   const handleGenerateCampaign = async () => {
     try {
@@ -55,21 +73,24 @@ export default function Dashboard() {
 
   const handleGenerateVideo = async () => {
     if (!campaignId) return;
+
     try {
       setVideoLoading(true);
       setVideoSuccess(false);
+      setVideoUrl(null);
+
       const response = await generateCampaignVideos(
         campaignId,
         sidebarValues.businessName,
         sidebarValues.phoneNumber,
         sidebarValues.website,
       );
-      console.log("VIDEO URL SET TO:", response?.data?.final_merged_video);
-      setVideoUrl(response.final_merged_video);
-      setVideoSuccess(true);
+
+      if (response) {
+        setStartPolling(true);
+      }
     } catch (error) {
       console.error("Video generation failed", error);
-    } finally {
       setVideoLoading(false);
     }
   };
@@ -93,6 +114,75 @@ export default function Dashboard() {
     }
   };
 
+  const handleDownloadImage = async (imageUrl, sceneNumber) => {
+    try {
+      const response = await fetch(imageUrl);
+      const blob = await response.blob();
+
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `scene-${sceneNumber}.png`;
+      document.body.appendChild(a);
+      a.click();
+
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Image download failed", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!startPolling || !campaignId || pollingRef.current) return;
+
+    if (videoUrl) {
+      setVideoSuccess(true);
+      setVideoLoading(false);
+      setVideoStatusMessage("");
+      setStartPolling(false);
+      clearInterval(pollingRef.current);
+      pollingRef.current = null;
+    }
+
+    pollingRef.current = setInterval(async () => {
+      try {
+        const response = await getCampaignStatus(campaignId);
+
+        const status = response?.campaign?.status;
+        const videoUrlFromApi = response?.campaign?.final_video_url;
+
+        if (!videoUrlFromApi) {
+          if (status === "merging_video") {
+            setVideoStatusMessage("Merging scenes into final video…");
+          } else if (status === "processing") {
+            setVideoStatusMessage("Processing video scenes…");
+          } else {
+            setVideoStatusMessage("Video is being generated…");
+          }
+          return;
+        } else {
+          setVideoUrl(videoUrlFromApi);
+          setVideoSuccess(true);
+          setVideoLoading(false);
+          setVideoStatusMessage("");
+          setStartPolling(false);
+          clearInterval(pollingRef.current);
+          pollingRef.current = null;
+        }
+      } catch (error) {
+        console.error("Polling failed", error);
+      }
+    }, 10000);
+
+    return () => {
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+      }
+    };
+  }, [startPolling, campaignId]);
+
   return (
     <div className="flex h-screen bg-slate-950 text-white overflow-hidden">
       <Sidebar
@@ -101,7 +191,6 @@ export default function Dashboard() {
         sidebarValues={sidebarValues}
         setSidebarValues={setSidebarValues}
       />
-
       <main className="flex-1 p-6 space-y-6 h-full overflow-y-auto">
         <div className="rounded-2xl bg-gradient from-slate-800 via-slate-700 to-slate-600 p-6 flex items-center gap-4 shadow-lg">
           <div className="text-3xl">🎬</div>
@@ -131,13 +220,11 @@ export default function Dashboard() {
             <>✨ Generate Campaign Images</>
           )}
         </button>
-
         {success && (
           <div className="bg-green-900/40 border border-green-700 text-green-300 px-4 py-3 rounded-lg">
             Images generated successfully
           </div>
         )}
-
         {scenes.length > 0 && (
           <>
             <h2 className="text-xl font-semibold">Generated Images</h2>
@@ -151,12 +238,11 @@ export default function Dashboard() {
                 >
                   <button
                     onClick={() => setFullscreenImage(scene.image)}
-                    className="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full opacity-0 hover:opacity-100 transition z-10"
+                    className="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full transition z-10"
                     title="View Fullscreen"
                   >
                     <MdFullscreen />
                   </button>
-
                   <img
                     src={scene.image}
                     alt={`Scene ${scene.scene_number} - ${scene.title}`}
@@ -165,6 +251,15 @@ export default function Dashboard() {
                       e.currentTarget.classList.remove("opacity-0")
                     }
                   />
+                  <button
+                    onClick={() =>
+                      handleDownloadImage(scene.image, scene.scene_number)
+                    }
+                    className="absolute bottom-2 right-2 bg-black/60 hover:bg-black text-white p-2 rounded-full transition"
+                    title="Download Image"
+                  >
+                    <FiDownload size={16} />
+                  </button>
                   <div className="p-3 text-sm text-slate-300">
                     Scene {scene.scene_number}
                   </div>
@@ -180,17 +275,14 @@ export default function Dashboard() {
                 Step 2 : Generate Campaign Video
               </h2>
             </div>
-
             <div className="bg-slate-900 border border-slate-800 rounded-xl p-4 space-y-4">
               <div className="text-sm text-slate-300">Campaign ID</div>
-
               <input
                 type="text"
                 value={campaignId}
                 readOnly
                 className="w-full bg-slate-800 rounded px-3 py-2 text-slate-300"
               />
-
               <button
                 onClick={handleGenerateVideo}
                 disabled={videoLoading}
@@ -199,20 +291,28 @@ export default function Dashboard() {
                 {videoLoading ? (
                   <>
                     <span className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></span>
-                    Generating Video...
+                    Video is Generating...
                   </>
                 ) : (
                   <>🎬 Generate Video</>
                 )}
               </button>
-
-              {videoSuccess && (
+              {videoSuccess && videoUrl && (
                 <div className="bg-green-900/40 border border-green-700 text-green-300 px-4 py-3 rounded-lg">
                   Video generated successfully
                 </div>
               )}
             </div>
           </>
+        )}
+
+        {videoLoading && !videoUrl && (
+          <div className="mt-6 flex flex-col items-center justify-center gap-4 p-6 rounded-xl border border-slate-800 bg-slate-900">
+            <span className="animate-spin h-8 w-8 border-4 border-emerald-500 border-t-transparent rounded-full"></span>
+            <p className="text-slate-300 text-sm text-center">
+              {videoStatusMessage}
+            </p>
+          </div>
         )}
 
         {fullscreenImage && (

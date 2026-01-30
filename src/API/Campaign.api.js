@@ -60,3 +60,10 @@ export const generateCampaignVideos = (
     },
   );
 };
+
+export const getCampaignStatus = async (campaign_id) => {
+  const response = await axiosInstance.get(
+    `/api/campaign/campaign/${campaign_id}`,
+  );
+  return response;
+};
