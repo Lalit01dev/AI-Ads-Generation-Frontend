@@ -123,8 +123,8 @@ export default function Sidebar({
                   <option value="summer">Summer</option>
                   <option value="winter">Winter</option>
                   <option value="spring">Spring</option>
-                  <option value="halloween">Halloween</option>
-                  <option value="easter">Easter</option>
+                  {/* <option value="halloween">Halloween</option>
+                  <option value="easter">Easter</option> */}
                 </select>
               </div>
 
