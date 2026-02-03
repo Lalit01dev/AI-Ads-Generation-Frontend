@@ -78,7 +78,6 @@ export default function Dashboard() {
       setVideoLoading(true);
       setVideoSuccess(false);
       setVideoUrl(null);
-
       const response = await generateCampaignVideos(
         campaignId,
         sidebarValues.businessName,
@@ -132,10 +131,8 @@ export default function Dashboard() {
       console.error("Image download failed", error);
     }
   };
-
   useEffect(() => {
     if (!startPolling || !campaignId || pollingRef.current) return;
-
     if (videoUrl) {
       setVideoSuccess(true);
       setVideoLoading(false);
@@ -144,14 +141,11 @@ export default function Dashboard() {
       clearInterval(pollingRef.current);
       pollingRef.current = null;
     }
-
     pollingRef.current = setInterval(async () => {
       try {
         const response = await getCampaignStatus(campaignId);
-
         const status = response?.campaign?.status;
         const videoUrlFromApi = response?.campaign?.final_video_url;
-
         if (!videoUrlFromApi) {
           if (status === "merging_video") {
             setVideoStatusMessage("Merging scenes into final video…");
@@ -174,7 +168,6 @@ export default function Dashboard() {
         console.error("Polling failed", error);
       }
     }, 10000);
-
     return () => {
       if (pollingRef.current) {
         clearInterval(pollingRef.current);
@@ -182,7 +175,6 @@ export default function Dashboard() {
       }
     };
   }, [startPolling, campaignId]);
-
   return (
     <div className="flex h-screen bg-slate-950 text-white overflow-hidden">
       <Sidebar
