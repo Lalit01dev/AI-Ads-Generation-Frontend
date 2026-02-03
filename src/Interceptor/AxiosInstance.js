@@ -2,6 +2,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
+console.log("VITE_BASE_URL (runtime):", import.meta.env.VITE_BASE_URL);
 const TIMEOUTS = {
   DEFAULT: 300000,
   LONG_RUNNING: 360000,
