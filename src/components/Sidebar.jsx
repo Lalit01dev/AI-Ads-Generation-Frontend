@@ -98,8 +98,6 @@ export default function Sidebar({
                   <option value="nail salon">Nail Salon</option>
                   <option value="hair salon">Hair Salon</option>
                   <option value="spa">Spa</option>
-                  {/* <option value="beauty salon">Beauty Salon</option>
-                  <option value="massage center">Massage Center</option> */}
                 </select>
               </div>
 
