@@ -123,8 +123,6 @@ export default function Sidebar({
                   <option value="summer">Summer</option>
                   <option value="winter">Winter</option>
                   <option value="spring">Spring</option>
-                  {/* <option value="halloween">Halloween</option>
-                  <option value="easter">Easter</option> */}
                 </select>
               </div>
 
@@ -147,8 +145,6 @@ export default function Sidebar({
                   <option value={1}>1</option>
                   <option value={2}>2</option>
                   <option value={3}>3</option>
-                  <option value={4}>4</option>
-                  <option value={5}>5</option>
                 </select>
 
                 <div className="flex items-center gap-2 mt-2 p-2 bg-slate-800/50 rounded text-xs text-slate-400">
@@ -201,8 +197,6 @@ export default function Sidebar({
                   <option value="">Please select</option>
                   <option value="woman">Woman</option>
                   <option value="man">Man</option>
-                  <option value="non-binary">Non-binary</option>
-                  <option value="mixed">Mixed group</option>
                 </select>
               </div>
 
@@ -227,7 +221,6 @@ export default function Sidebar({
                   <option value="european">European</option>
                   <option value="latino">Latino</option>
                   <option value="middle eastern">Middle Eastern</option>
-                  <option value="mixed">Mixed</option>
                 </select>
               </div>
             </div>

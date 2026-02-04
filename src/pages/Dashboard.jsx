@@ -22,11 +22,9 @@ export default function Dashboard() {
   const [videoUrl, setVideoUrl] = useState(null);
   const pollingRef = useRef(null);
   const [startPolling, setStartPolling] = useState(false);
-
   const [videoStatusMessage, setVideoStatusMessage] = useState(
     "Initializing video generation…",
   );
-
   const [sidebarValues, setSidebarValues] = useState({
     businessType: "",
     theme: "",
@@ -38,7 +36,6 @@ export default function Dashboard() {
     phoneNumber: "",
     website: "",
   });
-
   useEffect(() => {
     return () => {
       if (pollingRef.current) {
@@ -73,7 +70,6 @@ export default function Dashboard() {
 
   const handleGenerateVideo = async () => {
     if (!campaignId) return;
-
     try {
       setVideoLoading(true);
       setVideoSuccess(false);
@@ -84,7 +80,6 @@ export default function Dashboard() {
         sidebarValues.phoneNumber,
         sidebarValues.website,
       );
-
       if (response) {
         setStartPolling(true);
       }
