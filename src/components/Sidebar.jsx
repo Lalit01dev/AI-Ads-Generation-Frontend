@@ -100,7 +100,6 @@ export default function Sidebar({
                   <option value="spa">Spa</option>
                 </select>
               </div>
-
               <div>
                 <label className="block mb-1 text-slate-300">Theme</label>
                 <select
