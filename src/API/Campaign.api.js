@@ -8,6 +8,7 @@ export const generateBeautyCampaign = ({
   character_ethnicity,
   character_style,
   num_scenes,
+  background_music,
 }) => {
   const params = new URLSearchParams({
     business_type,
@@ -17,6 +18,7 @@ export const generateBeautyCampaign = ({
     character_ethnicity,
     character_style,
     num_scenes,
+    background_music,
   });
 
   return axiosInstance.post(
@@ -33,6 +35,7 @@ export const generateCampaignVideos = (
   business_name,
   phone_number,
   website,
+  music,
   onProgress = null,
 ) => {
   console.log("generateCampaignVideos called", {
@@ -53,6 +56,7 @@ export const generateCampaignVideos = (
         ...(business_name && { business_name }),
         ...(phone_number && { phone_number }),
         ...(website && { website }),
+        ...(music && { music }),
       },
 
       timeout: 360000,
@@ -65,5 +69,10 @@ export const getCampaignStatus = async (campaign_id) => {
   const response = await axiosInstance.get(
     `/api/campaign/campaign/${campaign_id}`,
   );
+  return response;
+};
+
+export const getMusicOption = async () => {
+  const response = await axiosInstance.get(`/api/campaign/music-options`);
   return response;
 };
