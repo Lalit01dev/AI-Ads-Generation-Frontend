@@ -1,10 +1,14 @@
 import { FaChevronLeft, FaChevronRight, FaInfoCircle } from "react-icons/fa";
+import { BiCog, BiBriefcase } from "react-icons/bi";
+import { useEffect } from "react";
 
 export default function Sidebar({
   open,
   setOpen,
   sidebarValues,
   setSidebarValues,
+  musicOptions = [],
+  onMusicClick,
   isLoading = false,
   estimatedTime = null,
 }) {
@@ -18,6 +22,7 @@ export default function Sidebar({
     businessName,
     phoneNumber,
     website,
+    music,
   } = sidebarValues;
 
   const formatTime = (minutes) => {
@@ -26,20 +31,42 @@ export default function Sidebar({
     return `${minutes} minutes`;
   };
 
+  const formatMusicLabel = (value) => {
+    return value
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+  };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setOpen(false);
+      } else {
+        setOpen(true);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <aside
-      className={`relative transition-all duration-300
-    bg-gradient from-slate-900 to-slate-950 border-r border-slate-800
-    ${open ? "w-80 p-6" : "w-16 p-3 overflow-hidden"}
-    flex flex-col h-full overflow-y-auto
-    ${isLoading ? "opacity-90" : ""}
-  `}
+      className={`absolute md:relative z-3 transition-all duration-300 ease-in-out
+    bg-white border-r border-slate-200 text-slate-700 shadow-xl md:shadow-none
+      ${open ? "w-80 p-4 md:p-6" : "w-12 md:w-16 p-2 md:p-3 overflow-hidden"}
+      flex flex-col h-full overflow-y-auto
+      ${isLoading ? "opacity-90" : ""}
+      `}
     >
       <button
         onClick={() => !isLoading && setOpen(!open)}
         disabled={isLoading}
-        className={`absolute top-4 right-4 text-white focus:outline-none transition-all
-          ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:text-blue-400"}
+        className={`absolute top-2 right-2 md:right-4 text-slate-600 focus:outline-none transition-all duration-300 ease-in-out cursor-pointer w-[30px] h-[30px] md:w-[35px] md:h-[35px] flex items-center justify-center bg-[#1e63b6] text-white rounded-full text-[12px] md:text-[14px] leading-[20px] shadow-[0px_3px_10px_2px_#ababab]
+        ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:text-[#ffffff]"}
         `}
         title={isLoading ? "Processing... Please wait" : "Toggle sidebar"}
       >
@@ -47,7 +74,7 @@ export default function Sidebar({
       </button>
 
       {isLoading && (
-        <div className="absolute top-0 left-0 right-0 bg-blue-900/50 text-white text-xs py-1 px-2 flex items-center justify-center">
+        <div className="absolute top-0 left-0 right-0 bg-blue-100 text-blue-800 text-xs">
           <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-2"></div>
           Processing...
           {estimatedTime && (
@@ -61,8 +88,8 @@ export default function Sidebar({
       {open && (
         <>
           <div className={`${isLoading ? "opacity-75" : ""}`}>
-            <h2 className="font-semibold mb-4 text-white text-lg flex items-center gap-2">
-              ⚙ Campaign Settings
+            <h2 className="flex items-center gap-1 font-semibold text-xl mb-3  text-[#1E63B6] border-b-2 border-[#1e63b6] pb-[5px]">
+              <BiCog /> Campaign Settings
               {isLoading && (
                 <span className="text-xs bg-blue-800 text-blue-200 px-2 py-1 rounded-full animate-pulse">
                   Active
@@ -70,11 +97,11 @@ export default function Sidebar({
               )}
             </h2>
 
-            <div className="space-y-4 text-sm text-white">
+            <div className="space-y-4 text-sm text-slate-700">
               <div>
                 <label
                   htmlFor="businessType"
-                  className=" mb-1 text-slate-300 flex items-center gap-1"
+                  className="mb-1 text-slate-600 flex items-center gap-1"
                 >
                   Business type
                   <FaInfoCircle
@@ -84,7 +111,10 @@ export default function Sidebar({
                 </label>
 
                 <select
-                  className="w-full bg-slate-800 rounded px-3 py-2 border border-slate-700 focus:border-blue-500 focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-white rounded-md px-2 py-2 
+                  border border-slate-300 
+                  focus:border-[#1E63B6]  focus-visible:outline-[#1E63B6] focus:ring-1 focus:ring-[#1E63B6]
+                  text-slate-700 text-sm cursor-pointer"
                   value={businessType}
                   onChange={(e) =>
                     setSidebarValues({
@@ -101,9 +131,14 @@ export default function Sidebar({
                 </select>
               </div>
               <div>
-                <label className="block mb-1 text-slate-300">Theme</label>
+                <label className="flex items-center text-slate-600 text-sm mb-1">
+                  Theme
+                </label>
                 <select
-                  className="w-full bg-slate-800 rounded px-3 py-2 border border-slate-700 focus:border-blue-500 focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-white rounded-md px-3 py-2 
+                  border border-slate-300 
+                  focus:border-[#1E63B6]  focus-visible:outline-[#1E63B6] focus:ring-1 focus:ring-[#1E63B6]
+                  text-slate-700 text-sm cursor-pointer"
                   value={theme}
                   onChange={(e) =>
                     setSidebarValues({
@@ -124,11 +159,14 @@ export default function Sidebar({
               </div>
 
               <div>
-                <label className="block mb-1 text-slate-300">
+                <label className="flex items-center text-slate-600 text-sm mb-1">
                   Number of scenes
                 </label>
                 <select
-                  className="w-full bg-slate-800 rounded px-3 py-2 border border-slate-700 focus:border-blue-500 focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-white rounded-md px-3 py-2 
+                  border border-slate-300 
+                  focus:border-[#1E63B6]  focus-visible:outline-[#1E63B6] focus:ring-1 focus:ring-[#1E63B6]
+                  text-slate-700 text-sm cursor-pointer"
                   value={scenes}
                   onChange={(e) =>
                     setSidebarValues({
@@ -144,25 +182,21 @@ export default function Sidebar({
                   <option value={3}>3</option>
                 </select>
 
-                <div className="flex items-center gap-2 mt-2 p-2 bg-slate-800/50 rounded text-xs text-slate-400">
-                  <input
-                    type="checkbox"
-                    checked
-                    readOnly
-                    className="accent-blue-500"
-                    disabled={isLoading}
-                  />
+                <div className="flex items-center gap-2 mt-2 p-2 bg-blue-50 border border-blue-200 rounded text-xs text-[#1E63B6]">
                   <span>Recommended: 3-5 scenes for best results</span>
                 </div>
               </div>
 
               <div>
-                <label className="block mb-1 text-slate-300">
+                <label className="flex items-center text-slate-600 text-sm mb-1">
                   Character age
                 </label>
                 <input
                   type="text"
-                  className="w-full bg-slate-800 rounded px-3 py-2 border border-slate-700 focus:border-blue-500 focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-white rounded-md px-3 py-2 
+                  border border-slate-300 
+                  focus:border-[#1E63B6]  focus-visible:outline-[#1E63B6] focus:ring-1 focus:ring-[#1E63B6]
+                  text-slate-700 text-sm"
                   value={characterAge}
                   onChange={(e) =>
                     setSidebarValues({
@@ -179,9 +213,14 @@ export default function Sidebar({
               </div>
 
               <div>
-                <label className="block mb-1 text-slate-300">Gender</label>
+                <label className="flex items-center text-slate-600 text-sm mb-1">
+                  Gender
+                </label>
                 <select
-                  className="w-full bg-slate-800 rounded px-3 py-2 border border-slate-700 focus:border-blue-500 focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-white rounded-md px-3 py-2 
+                  border border-slate-300 
+                 focus:border-[#1E63B6]  focus-visible:outline-[#1E63B6] focus:ring-1 focus:ring-[#1E63B6]
+                 text-slate-700 text-sm cursor-pointer"
                   value={gender}
                   onChange={(e) =>
                     setSidebarValues({
@@ -198,9 +237,14 @@ export default function Sidebar({
               </div>
 
               <div>
-                <label className="block mb-1 text-slate-300">Ethnicity</label>
+                <label className="flex items-center text-slate-600 text-sm mb-1">
+                  Ethnicity
+                </label>
                 <select
-                  className="w-full bg-slate-800 rounded px-3 py-2 border border-slate-700 focus:border-blue-500 focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-white rounded-md px-3 py-2 
+                  border border-slate-300 
+                  focus:border-[#1E63B6]  focus-visible:outline-[#1E63B6] focus:ring-1 focus:ring-[#1E63B6]
+                  text-slate-700 text-sm cursor-pointer"
                   value={ethnicity}
                   onChange={(e) =>
                     setSidebarValues({
@@ -220,20 +264,49 @@ export default function Sidebar({
                   <option value="middle eastern">Middle Eastern</option>
                 </select>
               </div>
+
+              <div>
+                <label className="text-slate-600 text-sm">Music</label>
+                <select
+                  className="w-full bg-white rounded-md px-3 py-2 
+                  border border-slate-300 
+                  focus:border-[#1E63B6] focus:ring-1 focus:ring-[#1E63B6]
+                  text-slate-700 text-sm"
+                  value={music}
+                  onChange={(e) =>
+                    setSidebarValues({
+                      ...sidebarValues,
+                      music: e.target.value,
+                    })
+                  }
+                  onFocus={onMusicClick}
+                  disabled={isLoading}
+                >
+                  <option value="">Please select</option>
+                  {musicOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {formatMusicLabel(option)}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
           </div>
+          {/* <hr className="my-5" /> */}
 
           <div className={`mt-6 ${isLoading ? "opacity-75" : ""}`}>
-            <h2 className="font-semibold mb-4 text-white text-lg flex items-center gap-2">
-              💼 Business Info
+            <div className="flex flex-col mb-3 border-b-2 border-[#1e63b6] pb-[5px]">
+              <h2 className="flex items-center gap-1 font-semibold text-[#1E63B6] text-xl mb-0 ">
+                <BiBriefcase /> Business Info
+              </h2>
               <span className="text-xs text-slate-400">
                 (For video customization)
               </span>
-            </h2>
+            </div>
 
-            <div className="space-y-4 text-sm text-white">
+            <div className="space-y-4 text-sm text-slate-700">
               <div>
-                <label className="block mb-1 text-slate-300">
+                <label className="flex items-center text-slate-600 text-sm mb-1">
                   Business name
                 </label>
                 <input
@@ -245,14 +318,16 @@ export default function Sidebar({
                       businessName: e.target.value,
                     })
                   }
-                  className="w-full bg-slate-800 rounded px-3 py-2 border border-slate-700 focus:border-blue-500 focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  placeholder="Your business name"
+                  className="w-full bg-white rounded-md px-3 py-2 
+                  border border-slate-300 
+                  focus:border-[#1E63B6] focus-visible:outline-[#1E63B6] focus:ring-1 focus:ring-[#1E63B6]
+                  text-slate-700 text-sm"
                   disabled={isLoading}
                 />
               </div>
 
               <div>
-                <label className="block mb-1 text-slate-300">
+                <label className="flex items-center text-slate-600 text-sm mb-1">
                   Phone number
                 </label>
                 <input
@@ -264,14 +339,18 @@ export default function Sidebar({
                       phoneNumber: e.target.value,
                     })
                   }
-                  className="w-full bg-slate-800 rounded px-3 py-2 border border-slate-700 focus:border-blue-500 focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                  placeholder="(123) 456-7890"
+                  className="w-full bg-white rounded-md px-3 py-2 
+                  border border-slate-300 
+                  focus:border-[#1E63B6] focus-visible:outline-[#1E63B6] focus:ring-1 focus:ring-[#1E63B6]
+                  text-slate-700 text-sm"
                   disabled={isLoading}
                 />
               </div>
 
               <div>
-                <label className="block mb-1 text-slate-300">Website</label>
+                <label className="flex items-center text-slate-600 text-sm mb-1">
+                  Website
+                </label>
                 <input
                   type="url"
                   value={website}
@@ -281,7 +360,10 @@ export default function Sidebar({
                       website: e.target.value,
                     })
                   }
-                  className="w-full bg-slate-800 rounded px-3 py-2 border border-slate-700 focus:border-blue-500 focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-white rounded-md px-3 py-2 
+                  border border-slate-300 
+                  focus:border-[#1E63B6] focus-visible:outline-[#1E63B6] focus:ring-1 focus:ring-[#1E63B6]
+                  text-slate-700 text-sm"
                   placeholder="https://example.com"
                   disabled={isLoading}
                 />
@@ -305,12 +387,12 @@ export default function Sidebar({
           )}
 
           {!isLoading && (
-            <div className="mt-6 p-3 bg-slate-800/50 rounded-lg border border-slate-700">
-              <h3 className="font-medium text-slate-300 text-sm mb-1 flex items-center gap-2">
+            <div className="mt-6 p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <h3 className="font-medium text-blue-800 text-sm mb-1 flex items-center gap-2">
                 <FaInfoCircle className="text-slate-500" />
                 Tips for best results:
               </h3>
-              <ul className="text-xs text-slate-400 space-y-1">
+              <ul className="text-xs text-[#1E63B6] space-y-1">
                 <li>• Fill all fields for personalized content</li>
                 <li>• More scenes = more variety in videos</li>
                 <li>• Specific details yield better customization</li>

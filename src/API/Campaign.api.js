@@ -67,3 +67,8 @@ export const getCampaignStatus = async (campaign_id) => {
   );
   return response;
 };
+
+export const getMusicOption = async () => {
+  const response = await axiosInstance.get(`/api/campaign/music-options`);
+  return response;
+};
