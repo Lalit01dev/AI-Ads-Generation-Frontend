@@ -5,7 +5,7 @@ import {
   generateBeautyCampaign,
   generateCampaignVideos,
   getCampaignStatus,
-  getMusicOption
+  getMusicOption,
 } from "../API/Campaign.api";
 import { MdFullscreen } from "react-icons/md";
 import { IoIosClose } from "react-icons/io";
@@ -44,6 +44,7 @@ export default function Dashboard() {
     website: "",
     music: "",
   });
+
   useEffect(() => {
     return () => {
       if (pollingRef.current) {
@@ -254,11 +255,14 @@ export default function Dashboard() {
             </button>
           </div>
           {success && (
-          <div className="flex items-center justify-center  gap-3 my-6 p-4 rounded-lg 
-               bg-green-100 border border-green-200">
-
-              <div className="flex items-center justify-center 
-                w-8 h-8 rounded-full bg-green-600 text-white shrink-0">
+            <div
+              className="flex items-center justify-center  gap-3 my-6 p-4 rounded-lg 
+               bg-green-100 border border-green-200"
+            >
+              <div
+                className="flex items-center justify-center 
+                w-8 h-8 rounded-full bg-green-600 text-white shrink-0"
+              >
                 ✓
               </div>
 
@@ -267,11 +271,13 @@ export default function Dashboard() {
                   Images generated successfully
                 </h4>
               </div>
-          </div>
+            </div>
           )}
           {scenes.length > 0 && (
             <>
-              <h2 className="text-lg leading-5 md:text-xl font-semibold mb-4">Generated Images</h2>
+              <h2 className="text-lg leading-5 md:text-xl font-semibold mb-4">
+                Generated Images
+              </h2>
               <div className="grid justify-center grid-cols-1 sm:grid-cols-[repeat(auto-fit,minmax(260px,1fr))] gap-6">
                 {scenes.map((scene) => (
                   <div
@@ -285,7 +291,7 @@ export default function Dashboard() {
                         onClick={() => setFullscreenImage(scene.image)}
                         className="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full transition z-10 cursor-pointer"
                         title="View Fullscreen"
-                        >
+                      >
                         <MdFullscreen />
                       </button>
                       <img
@@ -298,18 +304,20 @@ export default function Dashboard() {
                         }
                       />
                     </div>
-                    
+
                     <div className="px-4 py-3 text-sm text-black flex items-center justify-between">
-                      <h3 className="text-lg font-semibold uppercase tracking-[0.5px] text-[#1E63B6]">Scene {scene.scene_number}</h3>
+                      <h3 className="text-lg font-semibold uppercase tracking-[0.5px] text-[#1E63B6]">
+                        Scene {scene.scene_number}
+                      </h3>
                       <button
-                      onClick={() =>
-                        handleDownloadImage(scene.image, scene.scene_number)
-                      }
-                      className="bg-black/60 hover:bg-black text-white p-2 rounded-full transition cursor-pointer"
-                      title="Download Image"
-                    >
-                      <FiDownload size={16} />
-                    </button>
+                        onClick={() =>
+                          handleDownloadImage(scene.image, scene.scene_number)
+                        }
+                        className="bg-black/60 hover:bg-black text-white p-2 rounded-full transition cursor-pointer"
+                        title="Download Image"
+                      >
+                        <FiDownload size={16} />
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -355,11 +363,14 @@ export default function Dashboard() {
                   )}
                 </button>
                 {videoSuccess && videoUrl && (
-                <div className="flex items-center justify-center  gap-3 my-6 p-4 rounded-lg 
-                      bg-green-100 border border-green-200">
-
-                    <div className="flex items-center justify-center 
-                      w-8 h-8 rounded-full bg-green-600 text-white shrink-0">
+                  <div
+                    className="flex items-center justify-center  gap-3 my-6 p-4 rounded-lg 
+                      bg-green-100 border border-green-200"
+                  >
+                    <div
+                      className="flex items-center justify-center 
+                      w-8 h-8 rounded-full bg-green-600 text-white shrink-0"
+                    >
                       ✓
                     </div>
 
@@ -368,7 +379,7 @@ export default function Dashboard() {
                         Video generated successfully
                       </h4>
                     </div>
-                </div>
+                  </div>
                 )}
               </div>
             </>
@@ -402,7 +413,9 @@ export default function Dashboard() {
           )}
           {videoUrl && (
             <div className="mt-10">
-              <h3 className="text-lg leading-5 md:text-xl font-semibold mb-4">Final AI Advertisement</h3>
+              <h3 className="text-lg leading-5 md:text-xl font-semibold mb-4">
+                Final AI Advertisement
+              </h3>
               <video
                 key={videoUrl}
                 src={videoUrl}
@@ -418,8 +431,8 @@ export default function Dashboard() {
             cursor-pointer"
               >
                 <span className="flex items-center gap-3">
-                <FaDownload />
-                   Download Final Ad
+                  <FaDownload />
+                  Download Final Ad
                 </span>
               </button>
             </div>

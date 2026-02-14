@@ -12,6 +12,11 @@ export default function Sidebar({
   isLoading = false,
   estimatedTime = null,
 }) {
+  const formatTime = (minutes) => {
+    if (minutes < 1) return "less than a minute";
+    if (minutes === 1) return "1 minute";
+    return `${minutes} minutes`;
+  };
   const {
     businessType,
     theme,
@@ -24,12 +29,6 @@ export default function Sidebar({
     website,
     music,
   } = sidebarValues;
-
-  const formatTime = (minutes) => {
-    if (minutes < 1) return "less than a minute";
-    if (minutes === 1) return "1 minute";
-    return `${minutes} minutes`;
-  };
 
   const formatMusicLabel = (value) => {
     return value
@@ -292,7 +291,6 @@ export default function Sidebar({
               </div>
             </div>
           </div>
-          {/* <hr className="my-5" /> */}
 
           <div className={`mt-6 ${isLoading ? "opacity-75" : ""}`}>
             <div className="flex flex-col mb-3 border-b-2 border-[#1e63b6] pb-[5px]">
@@ -324,6 +322,24 @@ export default function Sidebar({
                   text-slate-700 text-sm"
                   disabled={isLoading}
                 />
+              </div>
+              <div>
+                <label className="text-slate-600 text-sm">Add Music</label>
+                <select
+                  onFocus={onMusicClick}
+                  className="w-full bg-white rounded-md px-3 py-2 
+                   border border-slate-300 
+                  focus:border-[#1E63B6] focus:ring-1 focus:ring-[#1E63B6]
+                  text-slate-700 text-sm"
+                  value={music}
+                  onChange={(e) =>
+                    setSidebarValues({
+                      ...sidebarValues,
+                      music: e.target.value,
+                    })
+                  }
+                  disabled={isLoading}
+                ></select>
               </div>
 
               <div>
